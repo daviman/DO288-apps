@@ -16,6 +16,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+<!--  <repositories>-->
+<!--    <repository>-->
+<!--      <id>Maven Repository</id>-->
+<!--      <url>https://mvnrepository.com/artifact</url>-->
+<!--    </repository>-->
+<!--  </repositories>-->
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -36,7 +43,29 @@
 		<dependency>
 			<groupId>io.thorntail</groupId>
 			<artifactId>jaxrs</artifactId>
+
+            <exclusions>
+              <exclusion>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el-impl</artifactId>
+              </exclusion>
+            </exclusions>
 		</dependency>
+
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish</groupId>-->
+<!--      <artifactId>javax.el-impl</artifactId>-->
+<!--      <version>3.0.1-b08-jbossorg-3</version>-->
+<!--    </dependency>-->
+
+    <!-- https://mvnrepository.com/artifact/org.glassfish/javax.el-api -->
+    <!-- https://mvnrepository.com/artifact/org.glassfish/javax.el-api -->
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish</groupId>-->
+<!--      <artifactId>javax.el-impl</artifactId>-->
+<!--      <version>3.0.1-b08-jbossorg-1</version>-->
+<!--    </dependency>-->
+
 
 	</dependencies>
 
