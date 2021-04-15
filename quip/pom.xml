@@ -28,6 +28,29 @@
         </dependencies>
     </dependencyManagement>
 
+<profile>
+  <id>nexus</id>
+  <!--Enable snapshots for the built in central repo to direct -->
+  <!--all requests to nexus via the mirror -->
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2</url>
+      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    </repository>
+  </repositories>
+ <pluginRepositories>
+    <pluginRepository>
+      <id>jboss</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public-jboss</url>
+      <releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+      <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+</profile>
+
+
   <build>
     <finalName>quip</finalName>
     <plugins>
