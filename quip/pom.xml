@@ -28,10 +28,8 @@
         </dependencies>
     </dependencyManagement>
 
-<profile>
-  <id>nexus</id>
-  <!--Enable snapshots for the built in central repo to direct -->
-  <!--all requests to nexus via the mirror -->
+<!--profile>
+  <id>nexus</id-->
   <repositories>
     <repository>
       <id>central</id>
@@ -48,8 +46,7 @@
       <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
     </pluginRepository>
   </pluginRepositories>
-</profile>
-
+<!--/profile-->
 
   <build>
     <finalName>quip</finalName>
