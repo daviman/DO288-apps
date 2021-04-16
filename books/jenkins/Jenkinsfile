@@ -6,7 +6,7 @@ pipeline {
     agent {
       node {
         // Added label for Node.js jenkins agent
-	label 'nodejs'
+	    label 'nodejs'
       }
     }
 
@@ -20,9 +20,7 @@ pipeline {
         APP_GIT_URL = "https://github.com/daviman/DO288-apps"
 
         // NEXUS_SERVER = "http://nexus-common.apps.cluster.domain.example.com/repository/nodejs"
-	NEXUS_SERVER = "http://nexus-md02-nexus.apps-crc.testing/repository/nodejs"
-
-	MY_GUID = "md02"
+        NEXUS_SERVER = "http://nexus-md02-nexus.apps-crc.testing/repository/nodejs"
 
         // DO NOT CHANGE THE GLOBAL VARS BELOW THIS LINE
         APP_NAME = "books"
@@ -67,15 +65,15 @@ pipeline {
 
                 echo '### Creating a new app in DEV env ###'
                 // Created a new app and expose the service
-		sh '''
-			oc project ${DEV_PROJECT}
-			oc new-app --name ${APP_NAME} \
-				nodejs:10-ubi8~${APP_GIT_URL} \
-				--context-dir ${APP_NAME} \
-				--as-deployment-config \
-				--build-env npm_config_registry=${NEXUS_SERVER}
-			oc expose svc/${APP_NAME}
-		   '''
+                sh '''
+                    oc project ${DEV_PROJECT}
+                    oc new-app --name ${APP_NAME} \
+                        nodejs:10-ubi8~${APP_GIT_URL} \
+                        --context-dir ${APP_NAME} \
+                        --as-deployment-config \
+                        --build-env npm_config_registry=${NEXUS_SERVER}
+                    oc expose svc/${APP_NAME}
+        		   '''
             }
         }
 
@@ -117,11 +115,11 @@ pipeline {
                     input message: "Promote to Staging?"
                 }
                 // Tagged the books:latest image stream as books:stage
-		script {
-			openshift.withCluster() {
-				openshift.tag("${DEV_PROJECT}/books:latest", "${STAGE_PROJECT}/books:stage")
-			}
-		}
+                script {
+                    openshift.withCluster() {
+                        openshift.tag("${DEV_PROJECT}/books:latest", "${STAGE_PROJECT}/books:stage")
+                    }
+                }
             }
         }
 
@@ -136,21 +134,22 @@ pipeline {
 
                 echo '### Creating a new app in Staging ###'
                 // Created a new app in stage using the books:stage image stream and expose the service
-		sh '''
-			oc project ${STAGE_PROJECT}
-			oc new-app --name ${APP_NAME} -i books:stage
-			oc expose svc/${APP_NAME}
-		   '''
+                sh '''
+                    oc project ${STAGE_PROJECT}
+                    oc new-app --name ${APP_NAME} -i books:stage
+                    oc expose svc/${APP_NAME}
+                '''
             }
         }
 
         stage('Wait for deployment in Staging') {
             steps {
                 sh "oc get route ${APP_NAME} -n ${STAGE_PROJECT} -o jsonpath='{ .spec.host }' --loglevel=4 > routehost"
-                echo "Reading routehost file is complete. Access the app at the URL http://${routeHost}."
+                // echo "Reading routehost file is complete. Access the app at the URL http://${routeHost}."
 
                 script {
                     routeHost = readFile('routehost').trim()
+                    echo "Reading routehost file is complete. Access the app at the URL http://${routeHost}."
 
                     // Watch deployment until pod is in 'Running' state
                     openshift.withCluster() {
@@ -161,7 +160,7 @@ pipeline {
                             }
                         }
                     } 
-		    echo "Deployment to Staging env is complete. Access the app at the URL http://${routeHost}."
+		            echo "Deployment to Staging env is complete. Access the app at the URL http://${routeHost}."
                 }
             }
         }
