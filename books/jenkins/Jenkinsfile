@@ -70,7 +70,7 @@ pipeline {
 		sh '''
 			oc project ${DEV_PROJECT}
 			oc new-app --name ${APP_NAME} \
-				nodejs:8~${APP_GIT_URL} \
+				nodejs:10-ubi8~${APP_GIT_URL} \
 				--context-dir ${APP_NAME} \
 				--as-deployment-config \
 				--build-env npm_config_registry=${NEXUS_SERVER}
