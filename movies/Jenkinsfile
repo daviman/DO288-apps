@@ -4,18 +4,18 @@ pipeline {
         timeout(time: 60, unit: 'MINUTES')
     }
     agent {
-      node {
-        // Add label for the Maven jenkins agent
-	label 'maven'
-      }
+        node {
+            // Add label for the Maven jenkins agent
+	        label 'maven'
+        }
     }
 
     environment {
-        //TODO: Customize these variables for your environment
-        DEV_PROJECT = "md02-movies-dev"
+        // Customize these variables for your environment
+        DEV_PROJECT   = "md02-movies-dev"
         STAGE_PROJECT = "md02-movies-stage"
-        APP_GIT_URL = "https://github.com/daviman/DO288-apps"
-        NEXUS_SERVER = "http://nexus-md02-nexus.apps-crc.testing/repository/java"
+        APP_GIT_URL   = "https://github.com/daviman/DO288-apps"
+        NEXUS_SERVER  = "http://nexus-md02-nexus.apps-crc.testing/repository/java"
 
         // DO NOT CHANGE THE GLOBAL VARS BELOW THIS LINE
         APP_NAME = "movies"
@@ -84,27 +84,27 @@ pipeline {
                 }
                 //  Create a new OpenShift application based on the ${APP_NAME}:latest image stream
                 //  Expose the ${APP_NAME} service for external access
-		sh '''
-			oc new-app ${APP_NAME}:latest -n ${DEV_PROJECT}
-			oc expose svc/${APP_NAME} -n ${DEV_PROJECT}
-		   '''
+                sh '''
+                    oc new-app ${APP_NAME}:latest -n ${DEV_PROJECT}
+                    oc expose svc/${APP_NAME} -n ${DEV_PROJECT}
+                '''
             }
         }
 
         stage('Wait for deployment in DEV env') {
             // Watch deployment until pod is in 'Running' state
-	    steps {
-		script {
-		    openshift.withCluster() {
-			openshift.withProject(env.DEV_PROJECT) {
-			    def deployment = openshift.selector("dc", "${APP_NAME}").rollout
-			    openshift.selector("dc", "${APP_NAME}").related("pods").untilEach(1) {
-				return (it.object().status.phase == "Running")
-			    }
-			}
-		    }
-		}	
-	    }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject(env.DEV_PROJECT) {
+                            def deployment = openshift.selector("dc", "${APP_NAME}").rollout
+                            openshift.selector("dc", "${APP_NAME}").related("pods").untilEach(1) {
+                                return (it.object().status.phase == "Running")
+                            }
+                        }
+                    }
+                }	
+            }
         }
 
         stage('Promote to Staging Env') {
@@ -115,7 +115,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         //  Tag the ${APP_NAME}:latest image stream in the dev env as ${APP_NAME}:stage in staging
-			openshift.tag("${DEV_PROJECT}/${APP_NAME}:latest", "${STAGE_PROJECT}/${APP_NAME}:stage")
+			            openshift.tag("${DEV_PROJECT}/${APP_NAME}:latest", "${STAGE_PROJECT}/${APP_NAME}:stage")
                     }
                 }
             }
@@ -132,11 +132,11 @@ pipeline {
 
                 echo '### Creating a new app in Staging ###'
                 //  Create a new app in staging and expose the service
-		sh '''
-			oc project ${STAGE_PROJECT}
-			oc new-app --name ${APP_NAME} -i ${APP_NAME}:stage --as-deployment-config
-			oc expose svc/${APP_NAME}
-		   '''
+                sh '''
+                    oc project ${STAGE_PROJECT}
+                    oc new-app --name ${APP_NAME} -i ${APP_NAME}:stage --as-deployment-config
+                    oc expose svc/${APP_NAME}
+                '''
             }
         }
 
