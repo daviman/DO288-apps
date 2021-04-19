@@ -85,7 +85,7 @@ pipeline {
                 //  Create a new OpenShift application based on the ${APP_NAME}:latest image stream
                 //  Expose the ${APP_NAME} service for external access
                 sh '''
-                    oc new-app ${APP_NAME}:latest -n ${DEV_PROJECT}
+                    oc new-app ${APP_NAME}:latest -n ${DEV_PROJECT} --as-deployment-config
                     oc expose svc/${APP_NAME} -n ${DEV_PROJECT}
                 '''
             }
